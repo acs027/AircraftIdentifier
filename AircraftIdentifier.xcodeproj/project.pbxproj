@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		080A73642E1AD49C006B5437 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 080A73482E1AD49C006B5437 /* README.md */; };
 		08DA6D282DF5854C009208CA /* FirebaseAI in Frameworks */ = {isa = PBXBuildFile; productRef = 08DA6D272DF5854C009208CA /* FirebaseAI */; };
 		08DA6D2A2DF5854C009208CA /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 08DA6D292DF5854C009208CA /* FirebaseAppCheck */; };
 		08DA6D2C2DF5854C009208CA /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 08DA6D2B2DF5854C009208CA /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		080A73482E1AD49C006B5437 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		08DA6D112DF57EB0009208CA /* AircraftIdentifier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AircraftIdentifier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -54,6 +56,7 @@
 		08DA6D082DF57EB0009208CA = {
 			isa = PBXGroup;
 			children = (
+				080A73482E1AD49C006B5437 /* README.md */,
 				08DA6D132DF57EB0009208CA /* AircraftIdentifier */,
 				08DA6D122DF57EB0009208CA /* Products */,
 			);
@@ -137,6 +140,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				080A73642E1AD49C006B5437 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
