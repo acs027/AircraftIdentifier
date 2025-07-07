@@ -1,5 +1,5 @@
 /*
- See the LICENSE.txt file for this sample’s licensing information.
+ See the LICENSE.txt file for this sample's licensing information.
  
  Abstract:
  An observable state object that contains profile details.
@@ -9,20 +9,60 @@ import SwiftUI
 import PhotosUI
 import CoreTransferable
 
+/// ViewModel for managing aircraft identification prompts and results
 @MainActor
-class PromptViewModel: ObservableObject {
+final class PromptViewModel: ObservableObject {
     
-    // MARK: - Prompt Image
+    // MARK: - Image State
     
+    /// Represents the current state of the prompt image
     enum ImageState {
         case empty
         case loading(Progress)
         case success(Image, UIImage)
         case failure(Error)
+        
+        var isLoading: Bool {
+            if case .loading = self { return true }
+            return false
+        }
+        
+        var hasImage: Bool {
+            if case .success = self { return true }
+            return false
+        }
     }
     
-    enum TransferError: Error {
+    /// Represents the current state of the AI response
+    enum ResponseState {
+        case empty
+        case loading(Progress)
+        case success([Aircraft])
+        case failure(Error)
+        
+        var isLoading: Bool {
+            if case .loading = self { return true }
+            return false
+        }
+        
+        var isProcessDone: Bool {
+            switch self {
+            case .empty, .loading:
+                return false
+            case .success, .failure:
+                return true
+            }
+        }
+    }
+    
+    // MARK: - Transferable Types
+    
+    enum TransferError: LocalizedError {
         case importFailed
+        
+        var errorDescription: String? {
+            "Failed to import image"
+        }
     }
     
     struct PromptImage: Transferable {
@@ -40,28 +80,92 @@ class PromptViewModel: ObservableObject {
         }
     }
     
-    @Published private(set) var imageState: ImageState = .empty
+    // MARK: - Published Properties
     
+    @Published private(set) var imageState: ImageState = .empty
+    @Published private(set) var responseState: ResponseState = .empty
     @Published var imageSelection: PhotosPickerItem? = nil {
         didSet {
-            if let imageSelection {
-                let progress = loadTransferable(from: imageSelection)
-                imageState = .loading(progress)
-            } else {
-                imageState = .empty
-            }
+            handleImageSelection()
+        }
+    }
+    @Published var cameraImage: UIImage? {
+        didSet {
+            handleCameraImage()
+        }
+    }
+    @Published var aircraftList: [Aircraft] = []
+    @Published var errorMessage: String = ""
+    
+    // MARK: - Private Properties
+    
+    private let aiService = AIService.shared
+    
+    // MARK: - Public Methods
+    
+    /// Resets the view model state
+    func resetState() {
+        responseState = .empty
+        aircraftList.removeAll()
+        errorMessage = ""
+    }
+    
+    /// Generates aircraft identification from the current image
+    func generatePrompt() async {
+        responseState = .loading(Progress())
+        aircraftList.removeAll()
+        
+        guard case .success(_, let uiImage) = imageState,
+              let resizedImage = uiImage.resized(to: 3200) else {
+            responseState = .failure(PromptError.noImage)
+            return
+        }
+        
+        do {
+            let json = try await aiService.generateContent(image: resizedImage)
+            let jsonData = Data(json.utf8)
+            let decoder = JSONDecoder()
+            aircraftList = try decoder.decode([Aircraft].self, from: jsonData)
+            responseState = .success(aircraftList)
+        } catch {
+            errorMessage = error.localizedDescription
+            responseState = .failure(error)
         }
     }
     
     // MARK: - Private Methods
     
+    /// Handles image selection from photo picker
+    private func handleImageSelection() {
+        if let imageSelection {
+            let progress = loadTransferable(from: imageSelection)
+            imageState = .loading(progress)
+        } else {
+            imageState = .empty
+        }
+    }
+    
+    /// Handles camera image capture
+    private func handleCameraImage() {
+        if let cameraImage {
+            imageState = .success(Image(uiImage: cameraImage), cameraImage)
+        } else {
+            imageState = .empty
+        }
+    }
+    
+    /// Loads transferable image from PhotosPickerItem
+    /// - Parameter imageSelection: The selected photo picker item
+    /// - Returns: Progress object for tracking the transfer
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
-        return imageSelection.loadTransferable(type: PromptImage.self) { result in
-            DispatchQueue.main.async {
-                guard imageSelection == self.imageSelection else {
+        return imageSelection.loadTransferable(type: PromptImage.self) { [weak self] result in
+            Task { @MainActor in
+                guard let self = self,
+                      imageSelection == self.imageSelection else {
                     print("Failed to get the selected item.")
                     return
                 }
+                
                 switch result {
                 case .success(let promptImage?):
                     self.imageState = .success(promptImage.image, promptImage.uiImage)
@@ -73,75 +177,4 @@ class PromptViewModel: ObservableObject {
             }
         }
     }
-    
-    let aiService = AIService.shared
-    
-    @Published var errorMessage = ""
-    @Published var cameraImage: UIImage? {
-        didSet {
-            if let cameraImage {
-                imageState = .success(Image(uiImage: cameraImage), cameraImage)
-            } else {
-                imageState = .empty
-            }
-        }
-    }
-    
-    @Published var aircraftList = [Aircraft]()
-    @Published private(set) var responseState: ResponseState = .empty
-    enum ResponseState {
-        case empty
-        case loading(Progress)
-        case success([Aircraft])
-        case failure(Error)
-        
-        var isLoading: Bool {
-            if case .loading = self { return true }
-            return false
-        }
-        
-        var isProcessDone: Bool {
-            if case .empty = self {
-                return false
-            } else if case .loading = self {
-                return false
-            }
-            return true
-        }
-    }
-    
-
-    func resetState() {
-        responseState = .empty
-    }
-
-   
-    func generatePrompt() async {
-        responseState = .loading(Progress())
-        aircraftList.removeAll()
-        
-        guard case .success(_, let uiImage) = imageState,
-        let resizedImage = uiImage.resized(to: 3200) else {
-            responseState = .failure(PromptError.NoImage)
-            return
-        }
-        let json = await aiService.generateContent(image: resizedImage)
-        
-        do {
-            let jsonData = Data(json.utf8)
-            let decoder = JSONDecoder()
-            aircraftList = try decoder.decode([Aircraft].self, from: jsonData)
-            responseState = .success(aircraftList)
-        } catch {
-            errorMessage = error.localizedDescription
-            responseState = .failure(error)
-        }
-    }
-    
-//    func generatePrompt() async {
-//        aircraftList = [
-//            Aircraft(aircraftType: "Airbus A320 family", airline: "Wizz Air", engineType: "Turbofan", distinctiveFeatures: "The aircraft has a predominantly white fuselage with distinctive magenta/purple accents on the tail, wingtips, and engine nacelles. It features sharklets on its wingtips.", aircraftRole: "Commercial passenger transport", registrationNumber: "Not visible", countryOfOrigin: "European Union", confidenceScore: 90)
-//          ]
-//        responseState = .success(aircraftList)
-//    }
 }

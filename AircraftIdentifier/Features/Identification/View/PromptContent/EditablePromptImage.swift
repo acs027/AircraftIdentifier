@@ -4,73 +4,124 @@
 //
 //  Created by ali cihan on 1.07.2025.
 //
+
 import SwiftUI
 import PhotosUI
 
+/// View for editing and displaying prompt images with animated magnifying glass
 struct EditablePromptImage: View {
+    
+    // MARK: - Properties
+    
     @ObservedObject var viewModel: PromptViewModel
     @State private var positionIndex = 0
     @State private var timer: Timer?
-    let glassSize: CGFloat = 80
+    
+    // MARK: - Constants
+    
+    private let glassSize: CGFloat = 80
+    private let animationDuration: TimeInterval = 1.2
+    
+    // MARK: - Body
     
     var body: some View {
-        GeometryReader {  geo in
-            let width = geo.size.width
-            let height = geo.size.height
-            let maxX = width - glassSize
-            let maxY = height - glassSize
-            
-            // 4 corner positions
-            let positions: [CGSize] = [
-                CGSize(width: glassSize, height: glassSize),           // top-left
-                CGSize(width: maxX - glassSize, height: glassSize),        // top-right
-                CGSize(width: glassSize, height: maxY - glassSize),        // bottom-left
-                CGSize(width: maxX - glassSize, height: maxY - glassSize)      // bottom-right
-            ]
-            
+        GeometryReader { geometry in
+            let positions = calculatePositions(for: geometry)
             
             PromptImageContainer(imageState: viewModel.imageState)
                 .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $viewModel.imageSelection,
-                                 matching: .images,
-                                 photoLibrary: .shared()) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 50))
-                            .foregroundColor(.accentColor)
-                    }
-                                 .padding()
-                                 .buttonStyle(.borderless)
+                    photoPickerButton
                 }
                 .overlay(alignment: .topLeading) {
-                    Image(systemName: "magnifyingglass")
-                        .resizable()
-                        .frame(width: glassSize, height: glassSize)
-                        .offset(positions[positionIndex])
-                        .animation(.easeInOut(duration: 1.2), value: positionIndex)
-                        .opacity(viewModel.responseState.isLoading ? 1 : 0)
+                    magnifyingGlassView(at: positions[positionIndex])
                 }
         }
         .frame(maxHeight: .infinity)
-        .onChange(of: viewModel.responseState.isLoading) { oldValue, newValue in
-            if newValue {
+        .onChange(of: viewModel.responseState.isLoading) { _, isLoading in
+            if isLoading {
                 startLoopingAnimation()
             } else {
                 stopAnimation()
             }
         }
+        .onDisappear {
+            stopAnimation()
+        }
     }
     
+    // MARK: - Private Views
+    
+    /// Photo picker button for selecting images
+    private var photoPickerButton: some View {
+        PhotosPicker(
+            selection: $viewModel.imageSelection,
+            matching: .images,
+            photoLibrary: .shared()
+        ) {
+            Image(systemName: "pencil.circle.fill")
+                .symbolRenderingMode(.multicolor)
+                .font(.system(size: 50))
+                .foregroundColor(.accentColor)
+        }
+        .padding()
+        .buttonStyle(.borderless)
+        .accessibilityLabel("Select photo")
+        .accessibilityHint("Choose an image from your photo library")
+    }
+    
+    /// Animated magnifying glass view
+    /// - Parameter position: The position for the magnifying glass
+    /// - Returns: The magnifying glass view
+    private func magnifyingGlassView(at position: CGSize) -> some View {
+        Image(systemName: "magnifyingglass")
+            .resizable()
+            .frame(width: glassSize, height: glassSize)
+            .offset(position)
+            .animation(.easeInOut(duration: animationDuration), value: positionIndex)
+            .opacity(viewModel.responseState.isLoading ? 1 : 0)
+            .accessibilityHidden(true)
+    }
+    
+    // MARK: - Private Methods
+    
+    /// Calculates the four corner positions for the magnifying glass animation
+    /// - Parameter geometry: The geometry reader proxy
+    /// - Returns: Array of positions for the four corners
+    private func calculatePositions(for geometry: GeometryProxy) -> [CGSize] {
+        let width = geometry.size.width
+        let height = geometry.size.height
+        let maxX = width - glassSize
+        let maxY = height - glassSize
+        
+        return [
+            CGSize(width: glassSize, height: glassSize),                    // top-left
+            CGSize(width: maxX - glassSize, height: glassSize),             // top-right
+            CGSize(width: glassSize, height: maxY - glassSize),             // bottom-left
+            CGSize(width: maxX - glassSize, height: maxY - glassSize)       // bottom-right
+        ]
+    }
+    
+    /// Starts the looping animation for the magnifying glass
     private func startLoopingAnimation() {
         guard timer == nil else { return } // Prevent multiple timers
         
-        timer = Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: animationDuration, repeats: true) { _ in
             positionIndex = (positionIndex + 1) % 4
         }
     }
     
+    /// Stops the animation and cleans up the timer
     private func stopAnimation() {
         timer?.invalidate()
         timer = nil
     }
+}
+
+// MARK: - Preview
+
+#Preview {
+    @Previewable @StateObject var viewModel = PromptViewModel()
+    
+    return EditablePromptImage(viewModel: viewModel)
+        .frame(height: 300)
 }

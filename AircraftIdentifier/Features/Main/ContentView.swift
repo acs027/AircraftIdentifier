@@ -1,31 +1,29 @@
 //
-//  AircraftIdentifierApp.swift
+//  ContentView.swift
 //  AircraftIdentifier
 //
 //  Created by ali cihan on 8.06.2025.
 //
 
 import SwiftUI
-import AppIntents
 
-/// Main application entry point
-@main
-struct AircraftIdentifierApp: App {
+/// Main content view of the application
+struct ContentView: View {
     
-    // MARK: - Properties
+    // MARK: - Environment Objects
     
-    @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
-    @StateObject private var appState = AppState()
+    @EnvironmentObject private var appState: AppState
     
     // MARK: - Body
     
-    var body: some Scene {
-        WindowGroup {
-            AppTabView()
-                .environmentObject(appState)
-                .onAppear {
-                    handleAppLaunch()
-                }
+    var body: some View {
+        NavigationStack {
+            IdentificationView()
+                .navigationTitle("Aircraft Identifier")
+                .navigationBarTitleDisplayMode(.large)
+        }
+        .onAppear {
+            handleAppLaunch()
         }
     }
     
@@ -45,6 +43,6 @@ struct AircraftIdentifierApp: App {
 #Preview {
     @Previewable @StateObject var appState = AppState()
     
-    return AppTabView()
+    return ContentView()
         .environmentObject(appState)
 }

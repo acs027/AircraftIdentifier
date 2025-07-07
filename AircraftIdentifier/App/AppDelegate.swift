@@ -9,14 +9,28 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAppCheck
 
-class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-      
-      let providerFactory = AircraftIdentifierAppCheckProviderFactory()
-      AppCheck.setAppCheckProviderFactory(providerFactory)
-    FirebaseApp.configure()
-
-    return true
-  }
+/// Application delegate for handling app lifecycle and Firebase configuration
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    
+    // MARK: - UIApplicationDelegate
+    
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        configureFirebase()
+        return true
+    }
+    
+    // MARK: - Private Methods
+    
+    /// Configures Firebase services including App Check
+    private func configureFirebase() {
+        // Configure App Check for security
+        let providerFactory = AircraftIdentifierAppCheckProviderFactory()
+        AppCheck.setAppCheckProviderFactory(providerFactory)
+        
+        // Configure Firebase
+        FirebaseApp.configure()
+    }
 }
