@@ -21,9 +21,9 @@ struct ContentView: View {
             IdentificationView()
                 .navigationTitle("Aircraft Identifier")
                 .navigationBarTitleDisplayMode(.large)
-        }
-        .onAppear {
-            handleAppLaunch()
+                .onAppear {
+                    handleAppLaunch()
+                }
         }
     }
     

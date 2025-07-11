@@ -39,8 +39,8 @@ struct PromptImageView: View {
                 .foregroundColor(.white)
             
             Text("Select an aircraft image")
-                .font(.caption)
-                .foregroundColor(.white.opacity(0.8))
+                .font(.body)
+                .foregroundColor(.white)
         }
         .accessibilityLabel("No image selected")
         .accessibilityHint("Tap to select an aircraft photo")

@@ -11,7 +11,7 @@ import SwiftUI
 struct AppTabView: View {
     
     // MARK: - State Properties
-    
+    @AppStorage("isDarkMode") private var isDarkMode: Bool?
     @State private var selectedTab: Tab = .identification
     
     // MARK: - Body
@@ -21,6 +21,7 @@ struct AppTabView: View {
             identificationTab
             settingsTab
         }
+        .preferredColorScheme(isDarkMode ?? false ? .dark : .light)
         .accessibilityElement(children: .contain)
     }
     
@@ -28,15 +29,13 @@ struct AppTabView: View {
     
     /// Aircraft identification tab
     private var identificationTab: some View {
-        NavigationView {
-            ContentView()
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .tabItem {
-            Label(Tab.identification.title, systemImage: Tab.identification.systemImage)
-        }
-        .tag(Tab.identification)
-        .accessibilityLabel("Aircraft identification")
+        ContentView()
+            .navigationBarTitleDisplayMode(.inline)
+            .tabItem {
+                Label(Tab.identification.title, systemImage: Tab.identification.systemImage)
+            }
+            .tag(Tab.identification)
+            .accessibilityLabel("Aircraft identification")
     }
     
     /// Settings tab

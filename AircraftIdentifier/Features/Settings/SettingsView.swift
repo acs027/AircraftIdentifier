@@ -13,17 +13,13 @@ struct SettingsView: View {
     // MARK: - State Properties
     
     @AppStorage("isDarkMode") private var isDarkMode = false
-    @AppStorage("enableNotifications") private var enableNotifications = true
-    @AppStorage("autoSavePhotos") private var autoSavePhotos = false
     
     // MARK: - Body
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 appearanceSection
-                notificationsSection
-                privacySection
                 aboutSection
             }
             .navigationTitle("Settings")
@@ -41,26 +37,6 @@ struct SettingsView: View {
         }
     }
     
-    /// Notifications settings section
-    private var notificationsSection: some View {
-        Section("Notifications") {
-            Toggle("Enable Notifications", isOn: $enableNotifications)
-                .accessibilityLabel("Toggle notifications")
-        }
-    }
-    
-    /// Privacy settings section
-    private var privacySection: some View {
-        Section("Privacy") {
-            Toggle("Auto-save Photos", isOn: $autoSavePhotos)
-                .accessibilityLabel("Toggle auto-save photos")
-            
-            NavigationLink("Camera Permissions") {
-                CameraPermissionsView()
-            }
-            .accessibilityLabel("Camera permissions settings")
-        }
-    }
     
     /// About section
     private var aboutSection: some View {

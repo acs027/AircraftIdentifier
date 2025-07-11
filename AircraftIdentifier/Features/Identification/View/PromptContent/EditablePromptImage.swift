@@ -76,6 +76,7 @@ struct EditablePromptImage: View {
         Image(systemName: "magnifyingglass")
             .resizable()
             .frame(width: glassSize, height: glassSize)
+            .shadow(radius: 1)
             .offset(position)
             .animation(.easeInOut(duration: animationDuration), value: positionIndex)
             .opacity(viewModel.responseState.isLoading ? 1 : 0)
