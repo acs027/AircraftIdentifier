@@ -20,25 +20,21 @@ An iOS application for identifying aircraft from photos using AI-powered image a
 ## 🖼️ Showcase
 
 <p align="center">
-    <img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-11 at 15 15 17" src="https://github.com/user-attachments/assets/5f290c88-992b-4dfe-988f-afbfc4eef02d" width="300" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-11 at 15 19 02" src="https://github.com/user-attachments/assets/101c4121-72a4-43fa-adc6-65c7b2be2239" width="300" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-11 at 15 18 42" src="https://github.com/user-attachments/assets/251ab463-d2b5-4720-8484-fc91089d16e6" width="300" />
+    <img alt="Simulator Screenshot - iPhone 16 - 2025-07-11 at 15 15 17" src="https://github.com/user-attachments/assets/5f290c88-992b-4dfe-988f-afbfc4eef02d" width="300" />
+<img alt="Simulator Screenshot - iPhone 16 - 2025-07-11 at 15 19 02" src="https://github.com/user-attachments/assets/101c4121-72a4-43fa-adc6-65c7b2be2239" width="300" />
+<imgalt="Simulator Screenshot - iPhone 16 - 2025-07-11 at 15 18 42" src="https://github.com/user-attachments/assets/251ab463-d2b5-4720-8484-fc91089d16e6" width="300" />
 </p>
 
 ![Simulator Screen Recording - iPhone 16 - 2025-07-11 at 15 15 53](https://github.com/user-attachments/assets/baeeed8d-4838-446b-a0c7-07306285a5ff)
 
 ### Shortcuts
-<p align="center">
-    ![shortcutIdentifyOpenCamera](https://github.com/user-attachments/assets/c9b22eee-3e04-4705-9495-0f8a774bef2b)
+![shortcutIdentifyOpenCamera](https://github.com/user-attachments/assets/c9b22eee-3e04-4705-9495-0f8a774bef2b)
 ![shortcutIdentifyLastPhoto](https://github.com/user-attachments/assets/7f7dec99-5548-4562-aceb-b1489bc74ab3)
 ![shortcutIdentifyAircraft](https://github.com/user-attachments/assets/569c6340-9f79-496c-911b-c4b36709a1d4)
-</p>
 
 ### Siri
-<p align="center">
-    ![siriOpenCamera](https://github.com/user-attachments/assets/f1a2903b-f1d1-44e3-9209-eb3638cd08ec)
-    ![siriLastPhoto](https://github.com/user-attachments/assets/527ef3b8-35aa-4d25-a7a3-590918b18cf6)
-</p>
+![siriOpenCamera](https://github.com/user-attachments/assets/f1a2903b-f1d1-44e3-9209-eb3638cd08ec)
+![siriLastPhoto](https://github.com/user-attachments/assets/527ef3b8-35aa-4d25-a7a3-590918b18cf6)
 
 
 
