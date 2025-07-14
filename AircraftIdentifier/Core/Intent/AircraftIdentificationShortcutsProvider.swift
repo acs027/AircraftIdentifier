@@ -16,10 +16,7 @@ struct AircraftIdentificationShortcutsProvider: AppShortcutsProvider {
         AppShortcut(
             intent: SelectPhotoAndIdentifyAircraftIntent(),
             phrases: [
-                "Identify aircraft in \(.applicationName)",
-                "What aircraft is this in \(.applicationName)",
-                "Identify this plane in \(.applicationName)",
-                "What plane is this in \(.applicationName)"
+                "bla bla bla bla in \(.applicationName)"
             ],
             shortTitle: "Identify Aircraft",
             systemImageName: "airplane"
@@ -37,7 +34,7 @@ struct AircraftIdentificationShortcutsProvider: AppShortcutsProvider {
         )
         
         AppShortcut(
-            intent: TakePhotoAndIdentifyIntent(),
+            intent: OpenCameraIntent(),
             phrases: [
                 "Take aircraft photo in \(.applicationName)",
                 "Open camera in \(.applicationName)",
