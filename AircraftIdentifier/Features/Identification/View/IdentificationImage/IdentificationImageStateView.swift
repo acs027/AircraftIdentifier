@@ -2,11 +2,11 @@ import SwiftUI
 import PhotosUI
 
 /// View for displaying prompt images with different states
-struct PromptImageView: View {
+struct IdentificationImageStateView: View {
     
     // MARK: - Properties
     
-    let imageState: PromptViewModel.ImageState
+    let imageState: IdentificationViewModel.ImageState
     
     // MARK: - Body
     
@@ -36,12 +36,10 @@ struct PromptImageView: View {
         VStack(spacing: 12) {
             Image(systemName: "airplane")
                 .font(.system(size: 40))
-                .foregroundColor(.white)
-            
-            Text("Select an aircraft image")
-                .font(.body)
-                .foregroundColor(.white)
+            Text(AppConstants.IdentificationImageState.emptyStateText)
+                .modifier(TitleModifier())
         }
+        .foregroundColor(AppConstants.IdentificationImageState.stateColor)
         .accessibilityLabel("No image selected")
         .accessibilityHint("Tap to select an aircraft photo")
     }
@@ -51,50 +49,24 @@ struct PromptImageView: View {
         VStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 40))
-                .foregroundColor(.white)
             
-            Text("Failed to load image")
-                .font(.caption)
-                .foregroundColor(.white.opacity(0.8))
+            Text(AppConstants.IdentificationImageState.errorStateText)
+                .modifier(TitleModifier())
         }
+        .foregroundColor(AppConstants.IdentificationImageState.stateColor)
         .accessibilityLabel("Image loading failed")
     }
 }
 
-/// Container view for prompt images with gradient background
-struct PromptImageContainer: View {
-    
-    // MARK: - Properties
-    
-    let imageState: PromptViewModel.ImageState
-    
-    // MARK: - Body
-    
-    var body: some View {
-        RoundedRectangle(cornerRadius: 25)
-            .fill(
-                LinearGradient(
-                    colors: [.yellow, .orange],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-            .overlay {
-                PromptImageView(imageState: imageState)
-                    .scaledToFill()
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 25))
-            .accessibilityElement(children: .contain)
-    }
-}
+
 
 // MARK: - Preview
 
 #Preview {
     VStack(spacing: 20) {
-        PromptImageContainer(imageState: .empty)
-        PromptImageContainer(imageState: .loading(Progress()))
-        PromptImageContainer(imageState: .failure(NSError(domain: "test", code: 1)))
+        IdentificationImageContainer(imageState: .empty)
+        IdentificationImageContainer(imageState: .loading(Progress()))
+        IdentificationImageContainer(imageState: .failure(NSError(domain: "test", code: 1)))
     }
     .padding()
 }

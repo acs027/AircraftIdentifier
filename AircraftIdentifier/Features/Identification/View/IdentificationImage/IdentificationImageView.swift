@@ -1,5 +1,5 @@
 //
-//  EditablePromptImage.swift
+//  IdentificationImageView.swift
 //  AircraftIdentifier
 //
 //  Created by ali cihan on 1.07.2025.
@@ -9,11 +9,11 @@ import SwiftUI
 import PhotosUI
 
 /// View for editing and displaying prompt images with animated magnifying glass
-struct EditablePromptImage: View {
+struct IdentificationImageView: View {
     
     // MARK: - Properties
     
-    @ObservedObject var viewModel: PromptViewModel
+    @ObservedObject var viewModel: IdentificationViewModel
     @State private var positionIndex = 0
     @State private var timer: Timer?
     
@@ -28,7 +28,7 @@ struct EditablePromptImage: View {
         GeometryReader { geometry in
             let positions = calculatePositions(for: geometry)
             
-            PromptImageContainer(imageState: viewModel.imageState)
+            IdentificationImageContainer(imageState: viewModel.imageState)
                 .overlay(alignment: .bottomTrailing) {
                     photoPickerButton
                 }
@@ -121,8 +121,8 @@ struct EditablePromptImage: View {
 // MARK: - Preview
 
 #Preview {
-    @Previewable @StateObject var viewModel = PromptViewModel()
+    @Previewable @StateObject var viewModel = IdentificationViewModel()
     
-    return EditablePromptImage(viewModel: viewModel)
+    return IdentificationImageView(viewModel: viewModel)
         .frame(height: 300)
 }

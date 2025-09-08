@@ -16,11 +16,12 @@ struct AircraftIdentificationShortcutsProvider: AppShortcutsProvider {
         AppShortcut(
             intent: SelectPhotoAndIdentifyAircraftIntent(),
             phrases: [
-                "bla bla bla bla in \(.applicationName)"
+                "Identify aircraft in \(.applicationName)"
             ],
             shortTitle: "Identify Aircraft",
             systemImageName: "airplane"
         )
+        
         
         AppShortcut(
             intent: IdentifyLastPhotoIntent(),

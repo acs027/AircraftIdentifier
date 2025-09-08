@@ -42,7 +42,7 @@ struct AircraftInfoView: View {
     /// Aircraft type information section
     private var aircraftTypeSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            titleView("Aircraft Type")
+            titleView(AppConstants.AircraftInfo.type)
             infoView(aircraft.aircraftType)
         }
     }
@@ -50,7 +50,7 @@ struct AircraftInfoView: View {
     /// Aircraft role information section
     private var aircraftRoleSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            titleView("Aircraft Role")
+            titleView(AppConstants.AircraftInfo.role)
             infoView(aircraft.aircraftRole)
         }
     }
@@ -58,7 +58,7 @@ struct AircraftInfoView: View {
     /// Airline information section
     private var airlineSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            titleView("Airline")
+            titleView(AppConstants.AircraftInfo.airline)
             infoView(aircraft.airline)
         }
     }
@@ -66,7 +66,7 @@ struct AircraftInfoView: View {
     /// Engine type information section
     private var engineTypeSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            titleView("Engine Type")
+            titleView(AppConstants.AircraftInfo.engineType)
             infoView(aircraft.engineType)
         }
     }
@@ -74,7 +74,7 @@ struct AircraftInfoView: View {
     /// Distinctive features information section
     private var distinctiveFeaturesSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            titleView("Distinctive Features")
+            titleView(AppConstants.AircraftInfo.distinctiveFeature)
             infoView(aircraft.distinctiveFeatures)
         }
     }
@@ -82,7 +82,7 @@ struct AircraftInfoView: View {
     /// Confidence score section
     private var confidenceSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            titleView("Confidence Score")
+            titleView(AppConstants.AircraftInfo.confidence)
             HStack {
                 Text("\(aircraft.confidenceScore)%")
                     .font(.headline)
@@ -116,19 +116,12 @@ struct AircraftInfoView: View {
             .frame(height: 25)
             .frame(maxWidth: .infinity)
             .background(
-                LinearGradient(
-                    colors: [.blue, .gray],
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
+                Gradients.titleViewBgGradient
             )
             .foregroundStyle(.clear)
             .overlay {
                 Text(title)
-                    .fontWidth(.expanded)
-                    .fontWeight(.black)
-                    .fontDesign(.rounded)
-                    .foregroundColor(.white)
+                    .modifier(TitleModifier())
             }
             .clipShape(RoundedRectangle(cornerRadius: 25))
     }
@@ -138,10 +131,7 @@ struct AircraftInfoView: View {
     /// - Returns: A styled info view
     private func infoView(_ text: String) -> some View {
         Text("- \(text)")
-            .fontWidth(.condensed)
-            .fontWeight(.medium)
-            .fontDesign(.rounded)
-            .foregroundColor(.primary)
+            .modifier(InfoModifier())
     }
     
     // MARK: - Computed Properties

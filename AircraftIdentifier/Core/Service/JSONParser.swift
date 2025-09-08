@@ -44,7 +44,7 @@ final class JSONParser {
             let aircraftList = try parseAircraftThrowing(from: jsonString)
             return aircraftList
         } catch {
-            print("⚠️ JSON parsing error: \(error.localizedDescription)")
+            debugPrint("⚠️ JSON parsing error: \(error.localizedDescription)")
             return []
         }
     }
@@ -76,7 +76,7 @@ final class JSONParser {
             let aircraftList = try decoder.decode([Aircraft].self, from: data)
             return aircraftList
         } catch {
-            print("⚠️ JSON parsing error: \(error.localizedDescription)")
+            debugPrint("⚠️ JSON parsing error: \(error.localizedDescription)")
             return []
         }
     }

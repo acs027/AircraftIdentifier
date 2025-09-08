@@ -285,7 +285,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"AircraftIdentifier/Shared/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"AircraftIdentifier/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DDYV9BM2N2;
 				ENABLE_PREVIEWS = YES;
@@ -329,7 +329,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"AircraftIdentifier/Shared/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"AircraftIdentifier/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DDYV9BM2N2;
 				ENABLE_PREVIEWS = YES;

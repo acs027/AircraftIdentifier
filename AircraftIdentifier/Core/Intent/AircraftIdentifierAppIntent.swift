@@ -21,6 +21,8 @@ struct SelectPhotoAndIdentifyAircraftIntent: AppIntent {
     
     static var description = IntentDescription("Select a photo and identify the aircraft in it.")
     
+    static var suggestInvocationPhrase: String? = nil
+    
     @Parameter(title: "Photo", description: "Choose a photo containing an aircraft")
     var photo: IntentFile
     
@@ -137,28 +139,6 @@ struct IdentifyLastPhotoIntent: AppIntent {
         }
     }
 }
-
-// MARK: - Camera Intent
-
-/// Intent for taking a photo and identifying aircraft
-//struct TakePhotoAndIdentifyIntent: AppIntent {
-//    
-//    // MARK: - AppIntent Properties
-//    
-//    static var title: LocalizedStringResource = "Take Photo and Identify"
-//    
-//    static var description = IntentDescription("Take a photo and identify the aircraft in it.")
-//    
-//    static var openAppWhenRun: Bool = true
-//    
-//    // MARK: - AppIntent Methods
-//    
-//    @MainActor
-//    func perform() async throws -> some IntentResult & OpensIntent {
-//        // This will open your app to the camera view
-//        return .result(opensIntent: OpenCameraIntent())
-//    }
-//}
 
 // MARK: - Open Camera Intent
 

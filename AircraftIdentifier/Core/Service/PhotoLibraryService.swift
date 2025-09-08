@@ -29,7 +29,7 @@ final class PhotoLibraryService {
     func fetchAndResizeLastPhoto(maxPixel: CGFloat = 3200) async -> UIImage? {
         
         guard await requestPhotoLibraryAccess() else {
-            print("❌ Photo Library access denied")
+            debugPrint("❌ Photo Library access denied")
             return nil
         }
         
@@ -39,7 +39,7 @@ final class PhotoLibraryService {
 
         let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
         guard let asset = fetchResult.firstObject else {
-            print("❌ No images found")
+            debugPrint("❌ No images found")
             return nil
         }
 
@@ -57,7 +57,7 @@ final class PhotoLibraryService {
                 options: options
             ) { image, _ in
                 guard let image else {
-                    print("❌ Failed to get image")
+                    debugPrint("❌ Failed to get image")
                     continuation.resume(returning: nil)
                     return
                 }

@@ -82,7 +82,7 @@ final class AIService {
     /// - Throws: AIServiceError if the operation fails
     func generateContent(image: UIImage) async throws -> String {
         do {
-            print("Processing image: \(image.size.width) x \(image.size.height)")
+            debugPrint("Processing image: \(image.size.width) x \(image.size.height)")
             
             let prompt = createAnalysisPrompt()
             let response = try await model.generateContent(image, prompt)
@@ -91,7 +91,7 @@ final class AIService {
                 throw AIServiceError.invalidResponse
             }
             
-            print("AI Response: \(json)")
+            debugPrint("AI Response: \(json)")
             return json
             
         } catch let error as AIServiceError {

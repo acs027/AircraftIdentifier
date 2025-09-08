@@ -12,7 +12,7 @@ struct IdentificationResultView: View {
     
     // MARK: - Properties
     
-    @ObservedObject var viewModel: PromptViewModel
+    @ObservedObject var viewModel: IdentificationViewModel
     
     // MARK: - Body
     
@@ -21,11 +21,7 @@ struct IdentificationResultView: View {
             .frame(maxWidth: .infinity)
             .foregroundStyle(.clear)
             .background {
-                LinearGradient(
-                    colors: [.yellow, .orange],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+                Gradients.identificationResultBgGradient
                 .clipShape(RoundedRectangle(cornerRadius: 25))
             }
             .overlay {
@@ -66,17 +62,15 @@ struct IdentificationResultView: View {
         VStack(spacing: 12) {
             Image(systemName: "airplane.circle")
                 .font(.system(size: 48))
-                .foregroundColor(.secondary)
             
-            Text("No aircraft found")
+            Text(AppConstants.IdentificationResult.aircraftNotFound)
                 .font(.headline)
-                .foregroundColor(.secondary)
             
-            Text("Try taking a clearer photo or selecting a different image")
+            Text(AppConstants.IdentificationResult.aircraftNotFoundDescripton)
                 .font(.caption)
-                .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
+        .foregroundStyle(AppConstants.IdentificationResult.textColor)
         .padding()
         .accessibilityLabel("No aircraft found in image")
     }
@@ -101,15 +95,14 @@ struct IdentificationResultView: View {
         VStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 48))
-                .foregroundColor(.red)
+                .foregroundColor(AppConstants.IdentificationResult.errorColor)
             
-            Text("Analysis Failed")
-                .font(.headline)
-                .foregroundColor(.red)
+            Text(AppConstants.IdentificationResult.failedText)
+                .modifier(TitleModifier())
             
             Text(error.localizedDescription)
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .font(.body)
+                .foregroundColor(AppConstants.IdentificationResult.textColor)
                 .multilineTextAlignment(.center)
         }
         .padding()
@@ -120,7 +113,7 @@ struct IdentificationResultView: View {
 // MARK: - Preview
 
 #Preview {
-    @Previewable @StateObject var viewModel = PromptViewModel()
+    @Previewable @StateObject var viewModel = IdentificationViewModel()
     
     return IdentificationResultView(viewModel: viewModel)
 }

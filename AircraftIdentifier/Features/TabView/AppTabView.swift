@@ -29,7 +29,7 @@ struct AppTabView: View {
     
     /// Aircraft identification tab
     private var identificationTab: some View {
-        ContentView()
+        IdentificationView()
             .navigationBarTitleDisplayMode(.inline)
             .tabItem {
                 Label(Tab.identification.title, systemImage: Tab.identification.systemImage)

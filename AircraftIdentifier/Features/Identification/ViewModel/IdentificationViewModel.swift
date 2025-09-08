@@ -1,9 +1,4 @@
-/*
- See the LICENSE.txt file for this sample's licensing information.
- 
- Abstract:
- An observable state object that contains profile details.
- */
+
 
 import SwiftUI
 import PhotosUI
@@ -11,7 +6,7 @@ import CoreTransferable
 
 /// ViewModel for managing aircraft identification prompts and results
 @MainActor
-final class PromptViewModel: ObservableObject {
+final class IdentificationViewModel: ObservableObject {
     
     // MARK: - Image State
     
@@ -97,6 +92,8 @@ final class PromptViewModel: ObservableObject {
     @Published var aircraftList: [Aircraft] = []
     @Published var errorMessage: String = ""
     
+    @Published var cameraError: CameraPermission.CameraError?
+    
     // MARK: - Private Properties
     
     private let aiService = AIService.shared
@@ -162,7 +159,7 @@ final class PromptViewModel: ObservableObject {
             Task { @MainActor in
                 guard let self = self,
                       imageSelection == self.imageSelection else {
-                    print("Failed to get the selected item.")
+                    debugPrint("Failed to get the selected item.")
                     return
                 }
                 
@@ -176,5 +173,31 @@ final class PromptViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    func handleCameraButtonAction(appState: AppState) {
+        if let error = CameraPermission.checkPermissions() {
+            cameraError = error
+        } else {
+            appState.openCamera()
+        }
+    }
+    
+    func handleActionButtonTap() {
+        if responseState.isProcessDone {
+            resetState()
+        } else {
+            Task {
+                await generatePrompt()
+            }
+        }
+    }
+    
+    func checkCameraError() -> Bool {
+        cameraError != nil
+    }
+    
+    func clearCameraError() {
+        cameraError = nil
     }
 }

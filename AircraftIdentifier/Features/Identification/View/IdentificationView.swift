@@ -6,58 +6,55 @@ struct IdentificationView: View {
     
     // MARK: - State Objects
     
-    @StateObject private var viewModel = PromptViewModel()
+    @StateObject private var viewModel = IdentificationViewModel()
     @EnvironmentObject private var appState: AppState
-    
-    // MARK: - State Properties
-    
-    @State private var cameraError: CameraPermission.CameraError?
-    @State private var isResponseShowing = false
     
     // MARK: - Body
     
     var body: some View {
-        VStack(spacing: 16) {
-            ZStack {
-                if !isResponseShowing {
-                    EditablePromptImage(viewModel: viewModel)
-                        .overlay(alignment: .bottomLeading) {
-                            cameraButton
-                        }
-                        .transition(.circularReveal)
-                        .accessibilityLabel("Image selection area")
-                } else {
-                    IdentificationResultView(viewModel: viewModel)
-                        .transition(.circularReveal)
-                        .accessibilityLabel("Aircraft identification results")
+        NavigationStack {
+            VStack(spacing: 16) {
+                mainCardView
+                Spacer()
+                actionButton
+            }
+            .padding()
+            .alert(isPresented: .constant(viewModel.checkCameraError()), error: viewModel.cameraError) { _ in
+                Button("OK") {
+                    handleCameraPermissionAlert()
                 }
+            } message: { error in
+                Text(error.recoverySuggestion ?? "Try again later")
             }
-            .animation(.easeInOut(duration: 0.6), value: isResponseShowing)
             
-            Spacer()
-            
-            actionButton
-        }
-        .padding()
-        .onChange(of: viewModel.responseState.isProcessDone) { _, newValue in
-            if newValue {
-                isResponseShowing = true
+            .fullScreenCover(isPresented: $appState.shouldOpenCamera) {
+                UIKitCamera(selectedImage: $viewModel.cameraImage)
+                    .ignoresSafeArea()
             }
-        }
-        .alert(isPresented: .constant(cameraError != nil), error: cameraError) { _ in
-            Button("OK") {
-                cameraError = nil
-            }
-        } message: { error in
-            Text(error.recoverySuggestion ?? "Try again later")
-        }
-        .fullScreenCover(isPresented: $appState.shouldOpenCamera) {
-            UIKitCamera(selectedImage: $viewModel.cameraImage)
-                .ignoresSafeArea()
+            .navigationTitle("Aircraft Identifier")
+            .navigationBarTitleDisplayMode(.large)
         }
     }
     
     // MARK: - Private Views
+    
+    private var mainCardView: some View {
+        ZStack {
+            if !viewModel.responseState.isProcessDone {
+                IdentificationImageView(viewModel: viewModel)
+                    .overlay(alignment: .bottomLeading) {
+                        cameraButton
+                    }
+                    .transition(.circularReveal)
+                    .accessibilityLabel("Image selection area")
+            } else {
+                IdentificationResultView(viewModel: viewModel)
+                    .transition(.circularReveal)
+                    .accessibilityLabel("Aircraft identification results")
+            }
+        }
+        .animation(.easeInOut(duration: 0.6), value: viewModel.responseState.isProcessDone)
+    }
     
     /// Camera button for capturing photos
     private var cameraButton: some View {
@@ -80,33 +77,26 @@ struct IdentificationView: View {
         Button {
             handleActionButtonTap()
         } label: {
-            ButtonLabel(imageSystemName: isResponseShowing ? "arrow.trianglehead.counterclockwise" : "magnifyingglass")
+            ButtonLabel(imageSystemName: viewModel.responseState.isProcessDone ? "arrow.trianglehead.counterclockwise" : "magnifyingglass")
         }
-        .accessibilityLabel(isResponseShowing ? "Reset identification" : "Identify aircraft")
-        .accessibilityHint(isResponseShowing ? "Start over with a new image" : "Analyze the current image")
+        .accessibilityLabel(viewModel.responseState.isProcessDone ? "Reset identification" : "Identify aircraft")
+        .accessibilityHint(viewModel.responseState.isProcessDone ? "Start over with a new image" : "Analyze the current image")
     }
     
     // MARK: - Private Methods
     
     /// Handles camera button tap with permission checking
     private func handleCameraButtonTap() {
-        if let error = CameraPermission.checkPermissions() {
-            cameraError = error
-        } else {
-            appState.openCamera()
-        }
+        viewModel.handleCameraButtonAction(appState: appState)
     }
     
     /// Handles main action button tap
     private func handleActionButtonTap() {
-        if isResponseShowing {
-            viewModel.resetState()
-            isResponseShowing.toggle()
-        } else {
-            Task {
-                await viewModel.generatePrompt()
-            }
-        }
+        viewModel.handleActionButtonTap()
+    }
+    
+    private func handleCameraPermissionAlert() {
+        viewModel.clearCameraError()
     }
 }
 
